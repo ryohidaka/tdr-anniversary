@@ -24,6 +24,14 @@ const upcoming = findUpcoming(rows, currentYear);
 			<h1>東京ディズニーリゾート アニバーサリー早見表</h1>
 			<UpcomingBanner upcoming={upcoming} />
 			<AnniversaryTable rows={rows} currentYear={currentYear} />
+			<section class="notes" aria-label="注意事項">
+				<p>
+					※「予定」と記載されている内容は計算上の予測日であり、公式に発表された確定情報ではありません。
+				</p>
+				<p>
+					当サイトは個人が運営する非公式のファンサイトです。ディズニー・エンタプライゼズ・インク、株式会社オリエンタルランドとは一切の関わりはありません。
+				</p>
+			</section>
 		</main>
 		<footer>
 			<address>
@@ -43,6 +51,16 @@ const upcoming = findUpcoming(rows, currentYear);
 	h1 {
 		font-size: 1.25rem;
 		text-align: center;
+	}
+
+	.notes {
+		margin-top: 1rem;
+		font-size: 0.875rem;
+		color: #4b5563;
+	}
+
+	.notes p {
+		margin: 0 0 0.5rem;
 	}
 
 	footer {
