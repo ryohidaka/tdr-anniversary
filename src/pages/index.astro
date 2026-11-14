@@ -5,16 +5,30 @@ const rows = buildSchedule()
 console.log(rows)
 ---
 
-<html lang="en">
+<html lang="ja">
 	<head>
 		<meta charset="utf-8" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="icon" href="/favicon.ico" />
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
+		<title>東京ディズニーリゾート アニバーサリー早見表</title>
 	</head>
 	<body>
-		<h1>Astro</h1>
+		<main>
+			<h1>東京ディズニーリゾート アニバーサリー早見表</h1>
+		</main>
 	</body>
 </html>
+
+<style>
+	main {
+		max-width: 32rem;
+		margin: 0 auto;
+	}
+
+	h1 {
+		font-size: 1.25rem;
+		text-align: center;
+	}
+</style>
