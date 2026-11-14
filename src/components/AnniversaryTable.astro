@@ -3,16 +3,24 @@ import type { YearRow } from "@/lib/anniversary";
 
 interface Props {
 	rows: YearRow[];
-	/** 現在の年度。この年度の行を強調する */
+	/** 現在の年度。この年度の行を強調し、これより先の年度のセルは予測として表示する */
 	currentYear: number;
 }
 
 const { rows, currentYear } = Astro.props;
 
-/** 0周年は「オープン」、節目でなければ「-」と表示する */
-function formatAnniversary(n: number | null): string {
-	if (n === null) return "-";
-	return n === 0 ? "オープン" : `${n}周年`;
+/**
+ * セルの表示内容を返す。
+ * 0周年は「オープン」、節目でなければ「-」。
+ * 現在の年度より先の節目は、開園日からの計算による予測(公式発表ではない)として
+ * projected = true にする。
+ */
+function toCell(n: number | null, year: number) {
+	if (n === null) return { label: "-", projected: false };
+	return {
+		label: n === 0 ? "オープン" : `${n}周年`,
+		projected: year > currentYear,
+	};
 }
 ---
 
@@ -26,20 +34,26 @@ function formatAnniversary(n: number | null): string {
 	</thead>
 	<tbody>
 		{
-			rows.map((row) => (
-				<tr
-					class:list={{ current: row.year === currentYear }}
-					aria-current={row.year === currentYear ? "true" : undefined}
-				>
-					<th scope="row">{row.year}</th>
-					<td class:list={["land", { filled: row.land !== null }]}>
-						{formatAnniversary(row.land)}
-					</td>
-					<td class:list={["sea", { filled: row.sea !== null }]}>
-						{formatAnniversary(row.sea)}
-					</td>
-				</tr>
-			))
+			rows.map((row) => {
+				const land = toCell(row.land, row.year);
+				const sea = toCell(row.sea, row.year);
+				return (
+					<tr
+						class:list={{ current: row.year === currentYear }}
+						aria-current={row.year === currentYear ? "true" : undefined}
+					>
+						<th scope="row">{row.year}</th>
+						<td class:list={["land", { filled: row.land !== null }]}>
+							<span>{land.label}</span>
+							{land.projected && <span class="projected">（予定）</span>}
+						</td>
+						<td class:list={["sea", { filled: row.sea !== null }]}>
+							<span>{sea.label}</span>
+							{sea.projected && <span class="projected">（予定）</span>}
+						</td>
+					</tr>
+				);
+			})
 		}
 	</tbody>
 </table>
@@ -83,6 +97,13 @@ function formatAnniversary(n: number | null): string {
 
 	tbody th {
 		font-weight: normal;
+	}
+
+	/* 予測のセルは、周年の下に小さく表示する */
+	.projected {
+		display: block;
+		font-size: 0.75rem;
+		color: #737373;
 	}
 
 	/* 今年度の行は、年度セルと値のあるセルを含めてすべて塗る(パーク色より優先) */
