@@ -24,9 +24,24 @@ describe("buildSchedule", () => {
     expect(rows.find((r) => r.year === 2026)?.sea).toBe(25);
   });
 
-  it("どのパークにも節目がない年度は含まない", () => {
+  it("どのパークにも節目がない年度は含まない(今年度を除く)", () => {
     expect(rows.some((r) => r.year === 1984)).toBe(false);
-    expect(rows.every((r) => r.land !== null || r.sea !== null)).toBe(true);
+    expect(
+      rows.filter((r) => r.year !== 2026).every((r) => r.land !== null || r.sea !== null),
+    ).toBe(true);
+  });
+
+  it("今年度に節目があれば、その内容のまま含む", () => {
+    expect(rows.find((r) => r.year === 2026)).toEqual({ year: 2026, land: null, sea: 25 });
+  });
+
+  it("今年度に節目がなくても、今年度の行を含む", () => {
+    // 2027-06-01 は2027年度で、どのパークにも節目がない
+    expect(scheduleAt("2027-06-01").find((r) => r.year === 2027)).toEqual({
+      year: 2027,
+      land: null,
+      sea: null,
+    });
   });
 
   it("年度の昇順に並んでいる", () => {
@@ -39,9 +54,9 @@ describe("buildSchedule", () => {
   });
 
   it("`today` の年度を基準にする", () => {
-    // 2026-03-31 は2025年度 → 最終年度は2053年度(2055年度までの最後の節目)
+    // 2026-03-31 は2025年度 → 範囲は2055年度まで。最後の節目は2053年度
     expect(scheduleAt("2026-03-31").at(-1)?.year).toBe(2053);
-    // 2026-04-01 は2026年度 → 最終年度は2056年度
+    // 2026-04-01 は2026年度 → 範囲は2056年度まで。最後の節目は2056年度
     expect(scheduleAt("2026-04-01").at(-1)?.year).toBe(2056);
   });
 });

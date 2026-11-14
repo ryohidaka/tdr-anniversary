@@ -3,9 +3,11 @@ import type { YearRow } from "@/lib/anniversary";
 
 interface Props {
 	rows: YearRow[];
+	/** 現在の年度。この年度の行を強調する */
+	currentYear: number;
 }
 
-const { rows } = Astro.props;
+const { rows, currentYear } = Astro.props;
 
 /** 0周年は「オープン」、節目でなければ「-」と表示する */
 function formatAnniversary(n: number | null): string {
@@ -25,7 +27,10 @@ function formatAnniversary(n: number | null): string {
 	<tbody>
 		{
 			rows.map((row) => (
-				<tr>
+				<tr
+					class:list={{ current: row.year === currentYear }}
+					aria-current={row.year === currentYear ? "true" : undefined}
+				>
 					<th scope="row">{row.year}</th>
 					<td class:list={["land", { filled: row.land !== null }]}>
 						{formatAnniversary(row.land)}
@@ -80,12 +85,17 @@ function formatAnniversary(n: number | null): string {
 		font-weight: normal;
 	}
 
-	/* 値のあるセルはパークの色で塗る */
-	tbody td.land.filled {
+	/* 今年度の行は、年度セルと値のあるセルを含めてすべて塗る(パーク色より優先) */
+	tbody tr.current > * {
+		background: var(--color-yellow-200, #fef08a);
+	}
+
+	/* 値のあるセルはパークの色。今年度の行は対象外 */
+	tbody tr:not(.current) td.land.filled {
 		background: var(--color-red-200, #fecaca);
 	}
 
-	tbody td.sea.filled {
+	tbody tr:not(.current) td.sea.filled {
 		background: var(--color-blue-200, #bfdbfe);
 	}
 

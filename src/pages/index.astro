@@ -1,9 +1,10 @@
 ---
 import AnniversaryTable from "@/components/AnniversaryTable.astro";
-import { buildSchedule } from "@/lib/anniversary";
+import { buildSchedule, toFiscalYear } from "@/lib/anniversary";
+import { Temporal } from "@js-temporal/polyfill";
 
-const rows = buildSchedule()
-console.log(rows)
+const today = Temporal.Now.plainDateISO();
+const rows = buildSchedule(today);
 ---
 
 <html lang="ja">
@@ -18,7 +19,7 @@ console.log(rows)
 	<body>
 		<main>
 			<h1>東京ディズニーリゾート アニバーサリー早見表</h1>
-			<AnniversaryTable rows={rows} />
+			<AnniversaryTable rows={rows} currentYear={toFiscalYear(today)} />
 		</main>
 	</body>
 </html>

@@ -2,7 +2,7 @@ import { Temporal } from "@js-temporal/polyfill";
 import { toFiscalYear } from "./fiscal-year";
 import { OPENING_DATES, PARKS, mapParks, type Park } from "./parks";
 
-const MILESTONE_INTERVAL = 5;
+export const MILESTONE_INTERVAL = 5;
 const YEARS_AHEAD = 30;
 
 /** 周年数(0 = 開園した年度)。節目でない場合は null */
@@ -22,16 +22,17 @@ function getAnniversary(year: number, openingYear: number): Anniversary {
 /**
  * 最も早い開園年度から、`today` の YEARS_AHEAD 年度先までの
  * アニバーサリー早見表を生成する。
- * どのパークにも節目がない年度は含めない。
+ * どのパークにも節目がない年度は含めないが、`today` の年度の行は必ず含める。
  */
 export function buildSchedule(today: Temporal.PlainDate = Temporal.Now.plainDateISO()): YearRow[] {
+  const currentYear = toFiscalYear(today);
   const firstYear = Math.min(...Object.values(OPENING_FISCAL_YEARS));
-  const lastYear = toFiscalYear(today) + YEARS_AHEAD;
+  const lastYear = currentYear + YEARS_AHEAD;
 
   return Array.from({ length: lastYear - firstYear + 1 }, (_, i) => firstYear + i)
     .map((year) => ({
       year,
       ...mapParks((park) => getAnniversary(year, OPENING_FISCAL_YEARS[park])),
     }))
-    .filter((row) => PARKS.some((park) => row[park] !== null));
+    .filter((row) => row.year === currentYear || PARKS.some((park) => row[park] !== null));
 }
