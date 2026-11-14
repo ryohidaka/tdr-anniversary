@@ -8,6 +8,10 @@ const today = Temporal.Now.plainDateISO();
 const currentYear = toFiscalYear(today);
 const rows = buildSchedule(today);
 const upcoming = findUpcoming(rows, currentYear);
+
+const title = "東京ディズニーリゾート アニバーサリー早見表";
+const description = "東京ディズニーランドとディズニーシーの開園日およびアニバーサリーの一覧表";
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 ---
 
 <html lang="ja">
@@ -17,11 +21,25 @@ const upcoming = findUpcoming(rows, currentYear);
 		<link rel="icon" href="/favicon.ico" />
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
-		<title>東京ディズニーリゾート アニバーサリー早見表</title>
+
+		<title>{title}</title>
+		<meta name="description" content={description} />
+		<link rel="canonical" href={canonicalUrl} />
+
+		<meta property="og:type" content="website" />
+		<meta property="og:site_name" content={title} />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={canonicalUrl} />
+		<meta property="og:locale" content="ja_JP" />
+
+		<meta name="twitter:card" content="summary" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
 	</head>
 	<body>
 		<main>
-			<h1>東京ディズニーリゾート アニバーサリー早見表</h1>
+			<h1>{title}</h1>
 			<UpcomingBanner upcoming={upcoming} />
 			<AnniversaryTable rows={rows} currentYear={currentYear} />
 			<section class="notes" aria-label="注意事項">
