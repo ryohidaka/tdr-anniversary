@@ -1,10 +1,13 @@
 ---
 import AnniversaryTable from "@/components/AnniversaryTable.astro";
-import { buildSchedule, toFiscalYear } from "@/lib/anniversary";
+import UpcomingBanner from "@/components/UpcomingBanner.astro";
+import { buildSchedule, findUpcoming, toFiscalYear } from "@/lib/anniversary";
 import { Temporal } from "@js-temporal/polyfill";
 
 const today = Temporal.Now.plainDateISO();
+const currentYear = toFiscalYear(today);
 const rows = buildSchedule(today);
+const upcoming = findUpcoming(rows, currentYear);
 ---
 
 <html lang="ja">
@@ -19,7 +22,8 @@ const rows = buildSchedule(today);
 	<body>
 		<main>
 			<h1>東京ディズニーリゾート アニバーサリー早見表</h1>
-			<AnniversaryTable rows={rows} currentYear={toFiscalYear(today)} />
+			<UpcomingBanner upcoming={upcoming} />
+			<AnniversaryTable rows={rows} currentYear={currentYear} />
 		</main>
 	</body>
 </html>
