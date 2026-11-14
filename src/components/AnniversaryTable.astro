@@ -9,6 +9,16 @@ interface Props {
 
 const { rows, currentYear } = Astro.props;
 
+const eraFormatter = new Intl.DateTimeFormat("ja-JP-u-ca-japanese", {
+	era: "long",
+	year: "numeric",
+});
+
+/** 年度(4月始まり)の初日を基準に和暦へ変換する。例: 2026 → 令和8年 */
+function formatEra(fiscalYear: number): string {
+	return eraFormatter.format(new Date(fiscalYear, 3, 1));
+}
+
 /**
  * セルの表示内容を返す。
  * 0周年は「オープン」、節目でなければ「-」。
@@ -42,7 +52,10 @@ function toCell(n: number | null, year: number) {
 						class:list={{ current: row.year === currentYear }}
 						aria-current={row.year === currentYear ? "true" : undefined}
 					>
-						<th scope="row">{row.year}</th>
+						<th scope="row">
+							<span>{row.year}</span>
+							<span class="era">{formatEra(row.year)}</span>
+						</th>
 						<td class:list={["land", { filled: row.land !== null }]}>
 							<span>{land.label}</span>
 							{land.projected && <span class="projected">（予定）</span>}
@@ -99,7 +112,8 @@ function toCell(n: number | null, year: number) {
 		font-weight: normal;
 	}
 
-	/* 予測のセルは、周年の下に小さく表示する */
+	/* 和暦と予測は、本文の下に小さく表示する */
+	.era,
 	.projected {
 		display: block;
 		font-size: 0.75rem;
