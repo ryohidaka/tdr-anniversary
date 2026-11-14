@@ -1,22 +1,12 @@
 ---
-import type { Park, UpcomingAnniversary } from "@/lib/anniversary";
+import type { UpcomingAnniversary } from "@/lib/anniversary";
+import { formatUpcoming } from "@/utils/format-upcoming";
 
 interface Props {
 	upcoming: UpcomingAnniversary;
 }
 
-const { yearsUntil, items } = Astro.props.upcoming;
-
-/** パーク名の表示ラベル。Park を足すと型エラーで漏れに気づける */
-const PARK_LABELS = {
-	land: "ディズニーランド",
-	sea: "ディズニーシー",
-} satisfies Record<Park, string>;
-
-const anniversaries = items.map(({ park, n }) => `${PARK_LABELS[park]}${n}周年`).join("と");
-
-/** 今年度なら「今年は〜」、それ以降なら「n年後に〜」 */
-const message = yearsUntil === 0 ? `今年は${anniversaries}` : `${yearsUntil}年後に${anniversaries}`;
+const message = formatUpcoming(Astro.props.upcoming);
 ---
 
 <p class="banner">{message}</p>

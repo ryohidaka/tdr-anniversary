@@ -2,6 +2,7 @@
 import AnniversaryTable from "@/components/AnniversaryTable.astro";
 import UpcomingBanner from "@/components/UpcomingBanner.astro";
 import { buildSchedule, findUpcoming, toFiscalYear } from "@/lib/anniversary";
+import { formatUpcoming }from "@/utils/format-upcoming"
 import { Temporal } from "@js-temporal/polyfill";
 
 const today = Temporal.Now.plainDateISO();
@@ -10,7 +11,7 @@ const rows = buildSchedule(today);
 const upcoming = findUpcoming(rows, currentYear);
 
 const title = "東京ディズニーリゾート アニバーサリー早見表";
-const description = "東京ディズニーランドとディズニーシーの開園日およびアニバーサリーの一覧表";
+const description = `東京ディズニーランドとディズニーシーの開園日およびアニバーサリーの一覧表。${formatUpcoming(upcoming)}。`;
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 ---
 
