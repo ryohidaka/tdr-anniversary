@@ -1,0 +1,84 @@
+---
+import type { YearRow } from "@/lib/anniversary";
+
+interface Props {
+    rows: YearRow[];
+}
+
+const { rows } = Astro.props;
+
+/** 0周年は「オープン」、節目でなければ「-」と表示する */
+function formatAnniversary(n: number | null): string {
+    if (n === null) return "-";
+    return n === 0 ? "オープン" : `${n}周年`;
+}
+---
+
+<table>
+    <thead>
+        <tr>
+            <th scope="col">年度</th>
+            <th scope="col" class="land">ディズニーランド</th>
+            <th scope="col" class="sea">ディズニーシー</th>
+        </tr>
+    </thead>
+    <tbody>
+        {
+            rows.map((row) => (
+                <tr>
+                    <th scope="row">{row.year}</th>
+                    <td>{formatAnniversary(row.land)}</td>
+                    <td>{formatAnniversary(row.sea)}</td>
+                </tr>
+            ))
+        }
+    </tbody>
+</table>
+
+<style>
+    table {
+        --color-land: #db2777;
+        --color-sea: #2563eb;
+
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th,
+    td {
+        padding: 0.5rem 0.75rem;
+        border: 1px solid #d1d5db;
+        text-align: center;
+        white-space: nowrap;
+    }
+
+    thead th {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        background: #cbd5e1;
+    }
+
+    thead .land,
+    thead .sea {
+        color: #fff;
+    }
+
+    thead .land {
+        background: var(--color-land);
+    }
+
+    thead .sea {
+        background: var(--color-sea);
+    }
+
+    tbody th {
+        font-weight: normal;
+    }
+
+    @media (min-width: 768px) {
+        table {
+            font-size: 1rem;
+        }
+    }
+</style>
