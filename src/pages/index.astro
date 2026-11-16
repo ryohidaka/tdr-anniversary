@@ -5,7 +5,7 @@ import { buildSchedule, findUpcoming, toFiscalYear } from "@/lib/anniversary";
 import { formatUpcoming }from "@/utils/format-upcoming"
 import { Temporal } from "@js-temporal/polyfill";
 
-const today = Temporal.Now.plainDateISO();
+const today = Temporal.Now.plainDateISO("Asia/Tokyo");
 const currentYear = toFiscalYear(today);
 const rows = buildSchedule(today);
 const upcoming = findUpcoming(rows, currentYear);
@@ -13,6 +13,9 @@ const upcoming = findUpcoming(rows, currentYear);
 const title = "東京ディズニーリゾート アニバーサリー早見表";
 const description = `東京ディズニーランドとディズニーシーの開園日およびアニバーサリーの一覧表。${formatUpcoming(upcoming)}。`;
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
+
+/** 最終更新日(ビルド日)。例: 2026年11月16日 */
+const updatedAt = `${today.year}年${today.month}月${today.day}日`;
 ---
 
 <html lang="ja">
@@ -33,6 +36,7 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 		<meta property="og:description" content={description} />
 		<meta property="og:url" content={canonicalUrl} />
 		<meta property="og:locale" content="ja_JP" />
+		<meta property="article:modified_time" content={today.toString()} />
 
 		<meta name="twitter:card" content="summary" />
 		<meta name="twitter:title" content={title} />
@@ -53,6 +57,9 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 			</section>
 		</main>
 		<footer>
+			<p class="updated">
+				最終更新日: <time datetime={today.toString()}>{updatedAt}</time>
+			</p>
 			<address>
 				<span>© {today.year} </span>
 				<a href="https://ryohidaka.jp/" rel="author">ryohidaka.jp</a>
@@ -85,6 +92,12 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 	footer {
 		padding: 0.75rem 0;
 		text-align: center;
+	}
+
+	.updated {
+		margin: 0 0 0.25rem;
+		font-size: 0.875rem;
+		color: #4b5563;
 	}
 
 	address {
