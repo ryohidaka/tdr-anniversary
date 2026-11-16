@@ -73,9 +73,6 @@ function toCell(n: number | null, year: number) {
 
 <style>
 	table {
-		--color-land: #db2777;
-		--color-sea: #2563eb;
-
 		width: 100%;
 		border-collapse: collapse;
 	}
@@ -83,7 +80,7 @@ function toCell(n: number | null, year: number) {
 	th,
 	td {
 		padding: 0.5rem 0.75rem;
-		border: 1px solid #d1d5db;
+		border: 1px solid var(--border);
 		text-align: center;
 		white-space: nowrap;
 	}
@@ -92,7 +89,7 @@ function toCell(n: number | null, year: number) {
 		position: sticky;
 		top: 0;
 		z-index: 1;
-		background: #cbd5e1;
+		background: var(--table-head-bg);
 	}
 
 	thead .land,
@@ -101,11 +98,11 @@ function toCell(n: number | null, year: number) {
 	}
 
 	thead .land {
-		background: var(--color-land);
+		background: var(--park-land);
 	}
 
 	thead .sea {
-		background: var(--color-sea);
+		background: var(--park-sea);
 	}
 
 	tbody th {
@@ -117,21 +114,21 @@ function toCell(n: number | null, year: number) {
 	.projected {
 		display: block;
 		font-size: 0.75rem;
-		color: #737373;
+		color: var(--text-subtle);
 	}
 
 	/* 今年度の行は、年度セルと値のあるセルを含めてすべて塗る(パーク色より優先) */
 	tbody tr.current > * {
-		background: var(--color-yellow-200, #fef08a);
+		background: var(--row-current);
 	}
 
 	/* 値のあるセルはパークの色。今年度の行は対象外 */
 	tbody tr:not(.current) td.land.filled {
-		background: var(--color-red-200, #fecaca);
+		background: var(--cell-land);
 	}
 
 	tbody tr:not(.current) td.sea.filled {
-		background: var(--color-blue-200, #bfdbfe);
+		background: var(--cell-sea);
 	}
 
 	@media (min-width: 768px) {
