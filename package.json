@@ -7,9 +7,6 @@
     "build": "astro build",
     "preview": "astro build && astro preview",
     "astro": "astro",
-    "generate-types": "wrangler types",
-    "deploy": "astro build && wrangler deploy",
-    "cf-typegen": "wrangler types",
     "prepare": "vp config"
   },
   "dependencies": {
@@ -20,8 +17,7 @@
   },
   "devDependencies": {
     "@types/node": "^26.6.6",
-    "vite-plus": "catalog:",
-    "wrangler": "^4.162.0"
+    "vite-plus": "catalog:"
   },
   "engines": {
     "node": ">=22.23.4"
