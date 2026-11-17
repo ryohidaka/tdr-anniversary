@@ -1,5 +1,11 @@
 # tdr-anniversary
 
+## 0.1.1
+
+### Patch Changes
+
+- [`deee61d`](https://github.com/ryohidaka/tdr-anniversary/commit/deee61d2ac9fadef686fcf089174b11b8b2dd83a) Thanks [@ryohidaka](https://github.com/ryohidaka)! - upgrade vite-plus
+
 ## 0.1.0
 
 ### Minor Changes
