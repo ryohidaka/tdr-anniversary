@@ -1,11 +1,15 @@
 import { Temporal } from "@js-temporal/polyfill";
 import { describe, expect, it } from "vite-plus/test";
+import { YEARS_AHEAD } from "./config";
 import { buildSchedule, isProjected } from "./schedule";
+
+const TODAY = "2026-11-14";
+const CURRENT_YEAR = 2026; // TODAY の年度
 
 const scheduleAt = (today: string) => buildSchedule(Temporal.PlainDate.from(today));
 
 describe("buildSchedule", () => {
-  const rows = scheduleAt("2026-11-14");
+  const rows = scheduleAt(TODAY);
 
   it("最も早い開園年度(0周年)から始まる", () => {
     expect(rows[0]).toEqual({ year: 1983, land: 0, sea: null });
@@ -21,18 +25,22 @@ describe("buildSchedule", () => {
 
   it("5年ごとの節目を含む", () => {
     expect(rows.find((r) => r.year === 2028)?.land).toBe(45);
-    expect(rows.find((r) => r.year === 2026)?.sea).toBe(25);
+    expect(rows.find((r) => r.year === CURRENT_YEAR)?.sea).toBe(25);
   });
 
   it("どのパークにも節目がない年度は含まない(今年度を除く)", () => {
     expect(rows.some((r) => r.year === 1984)).toBe(false);
     expect(
-      rows.filter((r) => r.year !== 2026).every((r) => r.land !== null || r.sea !== null),
+      rows.filter((r) => r.year !== CURRENT_YEAR).every((r) => r.land !== null || r.sea !== null),
     ).toBe(true);
   });
 
   it("今年度に節目があれば、その内容のまま含む", () => {
-    expect(rows.find((r) => r.year === 2026)).toEqual({ year: 2026, land: null, sea: 25 });
+    expect(rows.find((r) => r.year === CURRENT_YEAR)).toEqual({
+      year: CURRENT_YEAR,
+      land: null,
+      sea: 25,
+    });
   });
 
   it("今年度に節目がなくても、今年度の行を含む", () => {
@@ -49,8 +57,8 @@ describe("buildSchedule", () => {
     expect(years).toEqual([...years].sort((a, b) => a - b));
   });
 
-  it("今日から30年度先まで含む", () => {
-    expect(rows.at(-1)).toEqual({ year: 2056, land: null, sea: 55 });
+  it("今日から YEARS_AHEAD 年度先まで含む", () => {
+    expect(rows.at(-1)).toEqual({ year: CURRENT_YEAR + YEARS_AHEAD, land: null, sea: 55 });
   });
 
   it("`today` の年度を基準にする", () => {

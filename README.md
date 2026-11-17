@@ -27,6 +27,8 @@
 
 節目がない年度の行は表示しませんが、現在の年度の行は、節目の有無にかかわらず表示します。
 
+節目の間隔(`MILESTONE_INTERVAL`)と表示範囲(`YEARS_AHEAD`)は `src/lib/anniversary/config.ts` で定義しています。
+
 ## 技術構成
 
 - [Astro](https://astro.build)(静的ビルド)

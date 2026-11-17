@@ -1,6 +1,8 @@
+import { Temporal } from "@js-temporal/polyfill";
 import { describe, expect, it } from "vite-plus/test";
-import type { YearRow } from "./schedule";
+import { buildSchedule, type YearRow } from "./schedule";
 import { findUpcoming } from "./upcoming";
+import { toFiscalYear } from "./fiscal-year";
 
 const rows: YearRow[] = [
   { year: 2023, land: 40, sea: null },
@@ -41,5 +43,12 @@ describe("findUpcoming", () => {
 
   it("今年度以降に節目がなければエラーにする", () => {
     expect(() => findUpcoming(rows, 2032)).toThrow();
+  });
+
+  it("buildSchedule の結果には、常に節目が含まれる", () => {
+    for (const date of ["2026-03-31", "2026-04-01", "2027-06-01"]) {
+      const today = Temporal.PlainDate.from(date);
+      expect(() => findUpcoming(buildSchedule(today), toFiscalYear(today))).not.toThrow();
+    }
   });
 });

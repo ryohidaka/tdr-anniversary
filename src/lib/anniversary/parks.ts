@@ -10,7 +10,10 @@ export type Park = keyof typeof OPENING_DATES;
 
 export const PARKS = Object.keys(OPENING_DATES) as Park[];
 
-/** 各パークに対して `fn` を呼び、Record<Park, T> を組み立てる */
+/**
+ * 各パークに対して `fn` を呼び、Record<Park, T> を組み立てる。
+ * Object.fromEntries は Record<string, T> を返すため、型は `as` で絞っている。
+ */
 export function mapParks<T>(fn: (park: Park) => T): Record<Park, T> {
   return Object.fromEntries(PARKS.map((park) => [park, fn(park)])) as Record<Park, T>;
 }
