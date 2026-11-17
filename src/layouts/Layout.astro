@@ -1,0 +1,53 @@
+---
+import "@/styles/theme.css";
+
+import GoogleTagManager from "@/components/GoogleTagManager.astro";
+import { GOOGLE_SITE_VERIFICATION, SITE_TITLE } from "@/config";
+
+interface Props {
+	description: string;
+	/** 最終更新日(ISO 形式)。例: 2026-11-16 */
+	modifiedTime: string;
+}
+
+const { description, modifiedTime } = Astro.props;
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
+---
+
+<html lang="ja">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="color-scheme" content="light dark" />
+		<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+		<meta name="theme-color" content="#111827" media="(prefers-color-scheme: dark)" />
+		<meta name="generator" content={Astro.generator} />
+
+		<title>{SITE_TITLE}</title>
+		<meta name="description" content={description} />
+		<link rel="canonical" href={canonicalUrl} />
+
+		<meta property="og:type" content="website" />
+		<meta property="og:site_name" content={SITE_TITLE} />
+		<meta property="og:title" content={SITE_TITLE} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={canonicalUrl} />
+		<meta property="og:locale" content="ja_JP" />
+		<meta property="article:modified_time" content={modifiedTime} />
+
+		<meta name="twitter:card" content="summary" />
+		<meta name="twitter:title" content={SITE_TITLE} />
+		<meta name="twitter:description" content={description} />
+
+		<meta name="google-site-verification" content={GOOGLE_SITE_VERIFICATION} />
+
+		<link rel="sitemap" href="/sitemap-index.xml" />
+
+		<GoogleTagManager />
+	</head>
+	<body>
+		<slot />
+	</body>
+</html>

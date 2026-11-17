@@ -1,85 +1,47 @@
 ---
-import "@/styles/theme.css";
-
 import AnniversaryTable from "@/components/AnniversaryTable.astro";
 import UpcomingBanner from "@/components/UpcomingBanner.astro";
+import { SITE_TITLE } from "@/config";
+import Layout from "@/layouts/Layout.astro";
 import { buildSchedule, findUpcoming, toFiscalYear } from "@/lib/anniversary";
-import { formatUpcoming }from "@/utils/format-upcoming"
+import { formatUpcoming } from "@/utils/format-upcoming";
 import { Temporal } from "@js-temporal/polyfill";
-import GoogleTagManager from "@/components/GoogleTagManager.astro";
 
 const today = Temporal.Now.plainDateISO("Asia/Tokyo");
 const currentYear = toFiscalYear(today);
 const rows = buildSchedule(today);
-const upcoming = findUpcoming(rows, currentYear);
+const upcomingMessage = formatUpcoming(findUpcoming(rows, currentYear));
 
-const title = "東京ディズニーリゾート アニバーサリー早見表";
-const description = `東京ディズニーランドとディズニーシーの開園日およびアニバーサリーの一覧表。${formatUpcoming(upcoming)}。`;
-const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
+const description = `東京ディズニーランドとディズニーシーの開園日およびアニバーサリーの一覧表。${upcomingMessage}。`;
 
 /** 最終更新日(ビルド日)。例: 2026年11月16日 */
 const updatedAt = `${today.year}年${today.month}月${today.day}日`;
 ---
 
-<html lang="ja">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="color-scheme" content="light dark" />
-		<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
-		<meta name="theme-color" content="#111827" media="(prefers-color-scheme: dark)" />
-		<meta name="generator" content={Astro.generator} />
-
-		<title>{title}</title>
-		<meta name="description" content={description} />
-		<link rel="canonical" href={canonicalUrl} />
-
-		<meta property="og:type" content="website" />
-		<meta property="og:site_name" content={title} />
-		<meta property="og:title" content={title} />
-		<meta property="og:description" content={description} />
-		<meta property="og:url" content={canonicalUrl} />
-		<meta property="og:locale" content="ja_JP" />
-		<meta property="article:modified_time" content={today.toString()} />
-
-		<meta name="twitter:card" content="summary" />
-		<meta name="twitter:title" content={title} />
-		<meta name="twitter:description" content={description} />
-
-		<meta name="google-site-verification" content="RNyVKpYiLCosxYrIvjZ2T0dEU6NiNFNIoKD3DfqEyHM" />
-
-		<link rel="sitemap" href="/sitemap-index.xml" />
-
-		{/* Google tag */}
-		<GoogleTagManager />
-	</head>
-	<body>
-		<main>
-			<h1>{title}</h1>
-			<UpcomingBanner upcoming={upcoming} />
-			<AnniversaryTable rows={rows} currentYear={currentYear} />
-			<section class="notes" aria-label="注意事項">
-				<p>
-					※「予定」と記載されている内容は計算上の予測日であり、公式に発表された確定情報ではありません。
-				</p>
-				<p>
-					当サイトは個人が運営する非公式のファンサイトです。ディズニー・エンタプライゼズ・インク、株式会社オリエンタルランドとは一切の関わりはありません。
-				</p>
-			</section>
-		</main>
-		<footer>
-			<p class="updated">
-				最終更新日: <time datetime={today.toString()}>{updatedAt}</time>
+<Layout description={description} modifiedTime={today.toString()}>
+	<main>
+		<h1>{SITE_TITLE}</h1>
+		<UpcomingBanner message={upcomingMessage} />
+		<AnniversaryTable rows={rows} currentYear={currentYear} />
+		<section class="notes" aria-label="注意事項">
+			<p>
+				※「予定」と記載されている内容は計算上の予測日であり、公式に発表された確定情報ではありません。
 			</p>
-			<address>
-				<span>© {today.year} </span>
-				<a href="https://ryohidaka.jp/" rel="author">ryohidaka.jp</a>
-			</address>
-		</footer>
-	</body>
-</html>
+			<p>
+				当サイトは個人が運営する非公式のファンサイトです。ディズニー・エンタプライゼズ・インク、株式会社オリエンタルランドとは一切の関わりはありません。
+			</p>
+		</section>
+	</main>
+	<footer>
+		<p class="updated">
+			最終更新日: <time datetime={today.toString()}>{updatedAt}</time>
+		</p>
+		<address>
+			<span>© {today.year} </span>
+			<a href="https://ryohidaka.jp/" rel="author">ryohidaka.jp</a>
+		</address>
+	</footer>
+</Layout>
 
 <style>
 	main {

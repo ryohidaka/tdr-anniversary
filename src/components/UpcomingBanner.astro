@@ -1,12 +1,9 @@
 ---
-import type { UpcomingAnniversary } from "@/lib/anniversary";
-import { formatUpcoming } from "@/utils/format-upcoming";
-
 interface Props {
-	upcoming: UpcomingAnniversary;
+	message: string;
 }
 
-const message = formatUpcoming(Astro.props.upcoming);
+const { message } = Astro.props;
 ---
 
 <p class="banner">{message}</p>
