@@ -1,10 +1,5 @@
-import type { Park, UpcomingAnniversary } from "@/lib/anniversary";
-
-/** パーク名の表示ラベル。Park を足すと型エラーで漏れに気づける */
-const PARK_LABELS = {
-  land: "ディズニーランド",
-  sea: "ディズニーシー",
-} satisfies Record<Park, string>;
+import type { UpcomingAnniversary } from "@/lib/anniversary";
+import { PARK_LABELS } from "./park-labels";
 
 /**
  * 直近のアニバーサリーを文にする。

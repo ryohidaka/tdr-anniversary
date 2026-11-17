@@ -1,4 +1,4 @@
-export { buildSchedule } from "./schedule";
+export { buildSchedule, isProjected } from "./schedule";
 export { findUpcoming } from "./upcoming";
 export { toFiscalYear, fiscalYearStart } from "./fiscal-year";
 export type { YearRow, Anniversary } from "./schedule";

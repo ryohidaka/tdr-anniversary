@@ -1,5 +1,8 @@
 ---
-import type { YearRow } from "@/lib/anniversary";
+import { isProjected, type YearRow } from "@/lib/anniversary";
+import { formatAnniversary } from "@/utils/format-anniversary";
+import { formatEra } from "@/utils/format-era";
+import { PARK_LABELS } from "@/utils/park-labels";
 
 interface Props {
 	rows: YearRow[];
@@ -9,27 +12,11 @@ interface Props {
 
 const { rows, currentYear } = Astro.props;
 
-const eraFormatter = new Intl.DateTimeFormat("ja-JP-u-ca-japanese", {
-	era: "long",
-	year: "numeric",
-});
-
-/** 年度(4月始まり)の初日を基準に和暦へ変換する。例: 2026 → 令和8年 */
-function formatEra(fiscalYear: number): string {
-	return eraFormatter.format(new Date(fiscalYear, 3, 1));
-}
-
-/**
- * セルの表示内容を返す。
- * 0周年は「オープン」、節目でなければ「-」。
- * 現在の年度より先の節目は、開園日からの計算による予測(公式発表ではない)として
- * projected = true にする。
- */
+/** セルの表示内容。節目のセルのうち、現在の年度より先のものは予測として表示する */
 function toCell(n: number | null, year: number) {
-	if (n === null) return { label: "-", projected: false };
 	return {
-		label: n === 0 ? "オープン" : `${n}周年`,
-		projected: year > currentYear,
+		label: formatAnniversary(n),
+		projected: n !== null && isProjected(year, currentYear),
 	};
 }
 ---
@@ -38,8 +25,8 @@ function toCell(n: number | null, year: number) {
 	<thead>
 		<tr>
 			<th scope="col">年度</th>
-			<th scope="col" class="land">ディズニーランド</th>
-			<th scope="col" class="sea">ディズニーシー</th>
+			<th scope="col" class="land">{PARK_LABELS.land}</th>
+			<th scope="col" class="sea">{PARK_LABELS.sea}</th>
 		</tr>
 	</thead>
 	<tbody>

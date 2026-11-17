@@ -1,6 +1,6 @@
 import { Temporal } from "@js-temporal/polyfill";
 import { describe, expect, it } from "vite-plus/test";
-import { buildSchedule } from "./schedule";
+import { buildSchedule, isProjected } from "./schedule";
 
 const scheduleAt = (today: string) => buildSchedule(Temporal.PlainDate.from(today));
 
@@ -58,5 +58,16 @@ describe("buildSchedule", () => {
     expect(scheduleAt("2026-03-31").at(-1)?.year).toBe(2053);
     // 2026-04-01 は2026年度 → 範囲は2056年度まで。最後の節目は2056年度
     expect(scheduleAt("2026-04-01").at(-1)?.year).toBe(2056);
+  });
+});
+
+describe("isProjected", () => {
+  it("現在の年度より先なら予測", () => {
+    expect(isProjected(2027, 2026)).toBe(true);
+  });
+
+  it("現在の年度以前は予測ではない", () => {
+    expect(isProjected(2026, 2026)).toBe(false);
+    expect(isProjected(2025, 2026)).toBe(false);
   });
 });

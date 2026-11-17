@@ -36,3 +36,8 @@ export function buildSchedule(today: Temporal.PlainDate = Temporal.Now.plainDate
     }))
     .filter((row) => row.year === currentYear || PARKS.some((park) => row[park] !== null));
 }
+
+/** 現在の年度より先の年度は、開園日からの計算による予測(公式発表ではない) */
+export function isProjected(year: number, currentYear: number): boolean {
+  return year > currentYear;
+}
