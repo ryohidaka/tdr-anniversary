@@ -7,6 +7,6 @@ import partytown from "@astrojs/partytown";
 
 // https://astro.build/config
 export default defineConfig({
-  integrations: [sitemap(), partytown()],
+  integrations: [sitemap(), partytown({ config: { forward: ["dataLayer.push"] } })],
   site: "https://tdr-anniversary.pages.dev/",
 });

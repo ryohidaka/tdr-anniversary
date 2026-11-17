@@ -3,20 +3,19 @@ const id = import.meta.env.PUBLIC_GTM_ID;
 
 const init = `
 window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
+window.dataLayer.push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
 `;
 ---
 
 {
 	import.meta.env.PROD && id && (
 		<>
+			<script type="text/partytown" set:html={init} />
 			<script
 				type="text/partytown"
 				async
 				src={`https://www.googletagmanager.com/gtm.js?id=${id}`}
 			/>
-			<script type="text/partytown" set:html={init} />
 		</>
 	)
 }

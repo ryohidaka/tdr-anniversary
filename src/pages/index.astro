@@ -6,7 +6,7 @@ import UpcomingBanner from "@/components/UpcomingBanner.astro";
 import { buildSchedule, findUpcoming, toFiscalYear } from "@/lib/anniversary";
 import { formatUpcoming }from "@/utils/format-upcoming"
 import { Temporal } from "@js-temporal/polyfill";
-import GoogleAnalytics from "@/components/GoogleAnalytics.astro";
+import GoogleTagManager from "@/components/GoogleTagManager.astro";
 
 const today = Temporal.Now.plainDateISO("Asia/Tokyo");
 const currentYear = toFiscalYear(today);
@@ -53,7 +53,7 @@ const updatedAt = `${today.year}年${today.month}月${today.day}日`;
 		<link rel="sitemap" href="/sitemap-index.xml" />
 
 		{/* Google tag */}
-		{import.meta.env.PROD && <GoogleAnalytics />}
+		<GoogleTagManager />
 	</head>
 	<body>
 		<main>
