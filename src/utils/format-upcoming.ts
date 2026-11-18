@@ -1,12 +1,15 @@
+import type { Dictionary } from "@/i18n";
 import type { UpcomingAnniversary } from "@/lib/anniversary";
-import { PARK_LABELS } from "./park-labels";
 
 /**
  * 直近のアニバーサリーを文にする。
- * 今年度なら「今年は〜」、それ以降なら「n年後に〜」。
- * 同じ年度に複数のパークが節目なら「と」でつなぐ。
+ * 文型・連結の仕方は言語ごとの辞書に委ねる。
  */
-export function formatUpcoming({ yearsUntil, items }: UpcomingAnniversary): string {
-  const anniversaries = items.map(({ park, n }) => `${PARK_LABELS[park]}${n}周年`).join("と");
-  return yearsUntil === 0 ? `今年は${anniversaries}` : `${yearsUntil}年後に${anniversaries}`;
+export function formatUpcoming({ yearsUntil, items }: UpcomingAnniversary, t: Dictionary): string {
+  const anniversaries = t.upcoming.join(
+    items.map(({ park, n }) => t.upcoming.item(t.parks[park], t.table.anniversary(n))),
+  );
+  return yearsUntil === 0
+    ? t.upcoming.thisYear(anniversaries)
+    : t.upcoming.yearsLater(yearsUntil, anniversaries);
 }

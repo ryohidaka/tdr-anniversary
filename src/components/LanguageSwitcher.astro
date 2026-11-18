@@ -1,0 +1,52 @@
+---
+import { getRelativeLocaleUrl } from "astro:i18n";
+import { LOCALES, LOCALE_NAMES, getDictionary, type Locale } from "@/i18n";
+
+interface Props {
+	current: Locale;
+}
+
+const { current } = Astro.props;
+const t = getDictionary(current);
+---
+
+<nav aria-label={t.languageSwitcher}>
+	<ul>
+		{
+			LOCALES.map((locale) => (
+				<li>
+					<a
+						href={getRelativeLocaleUrl(locale)}
+						lang={locale}
+						hreflang={locale}
+						aria-current={locale === current ? "true" : undefined}
+					>
+						{LOCALE_NAMES[locale]}
+					</a>
+				</li>
+			))
+		}
+	</ul>
+</nav>
+
+<style>
+	ul {
+		display: flex;
+		justify-content: center;
+		gap: 1rem;
+		margin: 0 0 0.5rem;
+		padding: 0;
+		list-style: none;
+		font-size: 0.875rem;
+	}
+
+	a {
+		color: var(--link);
+	}
+
+	a[aria-current="true"] {
+		color: inherit;
+		font-weight: bold;
+		text-decoration: none;
+	}
+</style>

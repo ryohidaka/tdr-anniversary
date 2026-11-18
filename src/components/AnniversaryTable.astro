@@ -1,32 +1,35 @@
 ---
+import { getDictionary, type Locale } from "@/i18n";
 import { isProjected, type YearRow } from "@/lib/anniversary";
 import { formatAnniversary } from "@/utils/format-anniversary";
 import { formatEra } from "@/utils/format-era";
-import { PARK_LABELS } from "@/utils/park-labels";
 
 interface Props {
 	rows: YearRow[];
 	/** 現在の年度。この年度の行を強調し、これより先の年度のセルは予測として表示する */
 	currentYear: number;
+	locale: Locale;
 }
 
-const { rows, currentYear } = Astro.props;
+const { rows, currentYear, locale } = Astro.props;
+const t = getDictionary(locale);
 
 /** セルの表示内容。節目のセルのうち、現在の年度より先のものは予測として表示する */
 function toCell(n: number | null, year: number) {
 	return {
-		label: formatAnniversary(n),
+		label: formatAnniversary(n, t),
 		projected: n !== null && isProjected(year, currentYear),
 	};
 }
 ---
 
 <table>
+	<caption class="sr-only">{t.table.caption}</caption>
 	<thead>
 		<tr>
-			<th scope="col">年度</th>
-			<th scope="col" class="land">{PARK_LABELS.land}</th>
-			<th scope="col" class="sea">{PARK_LABELS.sea}</th>
+			<th scope="col">{t.table.fiscalYear}</th>
+			<th scope="col" class="land">{t.parks.land}</th>
+			<th scope="col" class="sea">{t.parks.sea}</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -41,15 +44,15 @@ function toCell(n: number | null, year: number) {
 					>
 						<th scope="row">
 							<span>{row.year}</span>
-							<span class="era">{formatEra(row.year)}</span>
+							{t.showEra && <span class="era">{formatEra(row.year)}</span>}
 						</th>
 						<td class:list={["land", { filled: row.land !== null }]}>
 							<span>{land.label}</span>
-							{land.projected && <span class="projected">（予定）</span>}
+							{land.projected && <span class="projected">{t.table.projected}</span>}
 						</td>
 						<td class:list={["sea", { filled: row.sea !== null }]}>
 							<span>{sea.label}</span>
-							{sea.projected && <span class="projected">（予定）</span>}
+							{sea.projected && <span class="projected">{t.table.projected}</span>}
 						</td>
 					</tr>
 				);
@@ -62,6 +65,19 @@ function toCell(n: number | null, year: number) {
 	table {
 		width: 100%;
 		border-collapse: collapse;
+	}
+
+	/* 視覚的には隠し、スクリーンリーダーとエージェントには表の説明として渡す */
+	.sr-only {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		margin: -1px;
+		padding: 0;
+		overflow: hidden;
+		clip: rect(0, 0, 0, 0);
+		white-space: nowrap;
+		border: 0;
 	}
 
 	th,

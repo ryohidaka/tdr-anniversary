@@ -1,0 +1,100 @@
+---
+import AnniversaryTable from "@/components/AnniversaryTable.astro";
+import LanguageSwitcher from "@/components/LanguageSwitcher.astro";
+import UpcomingBanner from "@/components/UpcomingBanner.astro";
+import { DEFAULT_LOCALE, LOCALES, LOCALE_TAGS, getDictionary, type Locale } from "@/i18n";
+import Layout from "@/layouts/Layout.astro";
+import { buildSchedule, findUpcoming, toFiscalYear } from "@/lib/anniversary";
+import { formatUpcoming } from "@/utils/format-upcoming";
+import { getToday } from "@/utils/today";
+
+export function getStaticPaths() {
+	return LOCALES.map((locale) => ({
+		// デフォルト言語は `/`、それ以外は `/en/` のように生成する
+		params: { locale: locale === DEFAULT_LOCALE ? undefined : locale },
+		props: { locale },
+	}));
+}
+
+interface Props {
+	locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getDictionary(locale);
+
+const today = getToday();
+const currentYear = toFiscalYear(today);
+const rows = buildSchedule(today);
+const upcomingMessage = formatUpcoming(findUpcoming(rows, currentYear), t);
+
+const description = t.site.description(upcomingMessage);
+
+/** 最終更新日(ビルド日)。例: 2026年11月16日 / November 16, 2026 */
+const updatedAt = today.toLocaleString(LOCALE_TAGS[locale], { dateStyle: "long" });
+---
+
+<Layout locale={locale} description={description} modifiedTime={today.toString()}>
+	<main>
+		<h1>{t.site.title}</h1>
+		<UpcomingBanner message={upcomingMessage} />
+		<AnniversaryTable rows={rows} currentYear={currentYear} locale={locale} />
+		<section class="notes" aria-label={t.notes.label}>
+			<p>{t.notes.projected}</p>
+			{t.notes.fiscalYear && <p>{t.notes.fiscalYear}</p>}
+			<p>{t.notes.unofficial}</p>
+		</section>
+	</main>
+	<footer>
+		<LanguageSwitcher current={locale} />
+		<p class="updated">
+			{t.footer.updated}: <time datetime={today.toString()}>{updatedAt}</time>
+		</p>
+		<address>
+			<span>© {today.year} </span>
+			<a href="https://ryohidaka.jp/" rel="author">ryohidaka.jp</a>
+		</address>
+	</footer>
+</Layout>
+
+<style>
+	main {
+		max-width: 32rem;
+		margin: 0 auto;
+	}
+
+	h1 {
+		font-size: 1.25rem;
+		text-align: center;
+	}
+
+	.notes {
+		margin-top: 1rem;
+		font-size: 0.875rem;
+		color: var(--text-muted);
+	}
+
+	.notes p {
+		margin: 0 0 0.5rem;
+	}
+
+	footer {
+		padding: 0.75rem 0;
+		text-align: center;
+	}
+
+	.updated {
+		margin: 0 0 0.25rem;
+		font-size: 0.875rem;
+		color: var(--text-muted);
+	}
+
+	address {
+		font-size: 0.875rem;
+		font-style: normal;
+	}
+
+	address a {
+		color: var(--link);
+	}
+</style>
