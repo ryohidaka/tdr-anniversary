@@ -1,5 +1,11 @@
 # tdr-anniversary
 
+## 0.2.0
+
+### Minor Changes
+
+- [`54b1d99`](https://github.com/ryohidaka/tdr-anniversary/commit/54b1d99ade691678d29c8cf421967d71bab9855f) Thanks [@ryohidaka](https://github.com/ryohidaka)! - 英語対応を追加
+
 ## 0.1.2
 
 ### Patch Changes
